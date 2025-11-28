@@ -1,6 +1,14 @@
-
+"use client";
 import Image from 'next/image';
+import { usePathname } from 'next/navigation';
 export default function Sidebar() {
+
+  const pathname = usePathname();
+  
+  const isActive = (path: string) => {
+    return pathname === path ? "bg-white/10" : "hover:bg-white/10";
+  };
+
   return (
     <aside className="w-64 bg-[#0D1B52] text-white min-h-screen p-6">
       <div className="text-2xl font-bold mb-10 flex items-center gap-2 rounded-md justify-center p-2 bg-white">
@@ -17,19 +25,19 @@ export default function Sidebar() {
 
       <nav className="space-y-4 text-sm">
         <a
-          className="flex items-center gap-3 p-2 rounded-lg bg-white/10"
+          className={`flex items-center gap-3 p-2 rounded-lg ${isActive('/dashboard')}`}
           href="/dashboard"
         >
           Dashboard
         </a>
         <a
-          className="flex items-center gap-3 p-2 rounded-lg hover:bg-white/10"
-          href="/dashboard/chart"
+          className={`flex items-center gap-3 p-2 rounded-lg hover:bg-white/10 ${isActive('/dashboard/expanse')}`}
+          href="/dashboard/expanse"
         >
           Your Expanse
         </a>
         <a
-          className="flex items-center gap-3 p-2 rounded-lg hover:bg-white/10"
+          className={`flex items-center gap-3 p-2 rounded-lg hover:bg-white/10 ${isActive('/dashboard/budgetplan')}`}
           href="/dashboard/budgetplan"
         >
           Budget Plan
