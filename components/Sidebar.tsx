@@ -30,7 +30,7 @@ export default function Sidebar() {
         </a>
         <a
           className="flex items-center gap-3 p-2 rounded-lg hover:bg-white/10"
-          href="/dahsboard/budgetplan"
+          href="/dashboard/budgetplan"
         >
           Budget Plan
         </a>
