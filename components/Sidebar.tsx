@@ -46,7 +46,7 @@ export default function Sidebar() {
           className="flex items-center gap-3 p-2 rounded-lg hover:bg-white/10"
           href="#"
         >
-          Crypto
+          Finance Report
         </a>
         <a
           className="flex items-center gap-3 p-2 rounded-lg hover:bg-white/10"
@@ -65,7 +65,7 @@ export default function Sidebar() {
         </a>
         <a
           className="flex items-center gap-3 p-2 rounded-lg hover:bg-white/10"
-          href="#"
+          href="/dashboard/profile"
         >
           User Profile
         </a>

@@ -1,27 +1,11 @@
-"use client";
-import { logoutUser } from "@/app/action";
-import { useRouter } from "next/navigation";
-import { useState } from "react";
 
-export default function ProfilePage() {
-  const router = useRouter();
-  const [loading, setLoading] = useState(false);
 
-  const handleLogout = async () => {
-    setLoading(true);
-    try {
-      // 1. Panggil server action logoutUser yang sudah kita buat
-      await logoutUser();
+import { getCurrentUser } from "@/app/action";
+import LogoutBtn from "@/components/logoutBtn";
 
-      // 2. Redirect ke halaman login
-      router.push("/auth/login");
-      router.refresh(); // Refresh agar header/navbar update (misal menghilangkan nama user)
-    } catch (error) {
-      console.error("Gagal logout:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
+export default async function ProfilePage() {
+
+  const user = await getCurrentUser();
 
   return (
     <div className="p-6 space-y-6">
@@ -44,9 +28,9 @@ export default function ProfilePage() {
 
         <div className="flex flex-col justify-center">
           <h2 className="text-2xl font-semibold text-[#0D1B52]">
-            Alexander Pierce
+            {user?.name}
           </h2>
-          <p className="text-gray-500 text-sm">alexander@example.com</p>
+          <p className="text-gray-500 text-sm">{user?.email}</p>
 
           <div className="mt-3 flex gap-3">
             <span className="bg-blue-100 text-blue-700 text-xs px-3 py-1 rounded-full">
@@ -60,19 +44,6 @@ export default function ProfilePage() {
             <button className="mt-4 bg-[#0D1B52] text-white px-4 py-2 rounded-xl hover:bg-[#15256d] transition text-sm">
               Update Profile Photo
             </button>
-            <button
-              onClick={handleLogout}
-              disabled={loading}
-              className="mt-4 bg-red-400 text-white px-4 py-2 rounded-xl hover:bg-red-500 transition text-sm"
-            >
-              {loading ? "Keluar..." : "Logout"}
-            </button>
-            {/* <a
-              href="/auth/login"
-              className="mt-4 bg-red-400 text-white px-4 py-2 rounded-xl hover:bg-red-500 transition text-sm"
-            >
-              Logout
-            </a> */}
           </div>
         </div>
       </div>
@@ -88,21 +59,21 @@ export default function ProfilePage() {
             <p className="text-gray-400 text-xs uppercase tracking-wider">
               Full Name
             </p>
-            <p className="text-[#0D1B52] font-medium">Alexander Pierce</p>
+            <p className="text-[#0D1B52] font-medium">{user?.name}</p>
           </div>
 
           <div className="space-y-1">
             <p className="text-gray-400 text-xs uppercase tracking-wider">
               Username
             </p>
-            <p className="text-[#0D1B52] font-medium">alex_dev</p>
+            <p className="text-[#0D1B52] font-medium">{user?.name}</p>
           </div>
 
           <div className="space-y-1">
             <p className="text-gray-400 text-xs uppercase tracking-wider">
               Email
             </p>
-            <p className="text-[#0D1B52] font-medium">alexander@example.com</p>
+            <p className="text-[#0D1B52] font-medium">{user?.email}</p>
           </div>
 
           <div className="space-y-1">
@@ -118,8 +89,10 @@ export default function ProfilePage() {
         </button>
       </div>
 
+      <LogoutBtn />
+
       {/* SECURITY */}
-      <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+      {/* <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
         <h3 className="text-xl font-semibold mb-4 text-[#0D1B52]">Security</h3>
 
         <div className="grid grid-cols-3 gap-4">
@@ -158,7 +131,7 @@ export default function ProfilePage() {
         <button className="mt-6 bg-red-500 text-white px-5 py-2 rounded-xl hover:bg-red-600 transition text-sm">
           Update Password
         </button>
-      </div>
+      </div> */}
     </div>
   );
 }
