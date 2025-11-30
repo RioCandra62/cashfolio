@@ -1,7 +1,7 @@
 "use server";
 
 import pool from "@/lib/neon";
-import bcrypt from "bcrypt";
+import bcrypt from "bcryptjs";
 import { randomUUID } from "crypto";
 import { z } from "zod"; 
 import { cookies } from "next/headers"; 
