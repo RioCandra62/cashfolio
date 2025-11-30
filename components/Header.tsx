@@ -13,7 +13,7 @@ export default function Header() {
         <div className="flex items-center gap-5">
           <span className="w-6 h-6 bg-gray-400 rounded-full"></span>
           <span className="w-6 h-6 bg-gray-400 rounded-full"></span>
-          <a href="/auth/login">
+          <a href="/dashboard/profile">
             <Image
               src="https://i.pravatar.cc/40"
               width={40}

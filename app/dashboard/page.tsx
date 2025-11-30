@@ -1,6 +1,16 @@
-export default function Dashbaord() {
+// import { stackServerApp } from "@stackframe/stack/server";
+import { redirect } from "next/navigation";
+export default async function Dashbaord() {
+  // const app = await stackServerApp();
+  // const { user } = await app.getUser();
+
+  // if (!user) {
+  //   // redirect ke login
+  //   return redirect("/auth/login");
+  // }
+
   return (
-    <div className="flex-1">
+    <div className="flex-1">  
       {/* TOP CARDS */}
       <div className="grid grid-cols-3 gap-6 mb-6">
         <div className="bg-white p-6 rounded-xl shadow-sm">

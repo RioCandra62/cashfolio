@@ -72,14 +72,23 @@ export default function Tabs() {
       </div>
       <div className="mt-4">
         {activeTab === "daily" && (
-          <div className="h-[600px] bg-gray-100 rounded-xl flex items-center justify-center">
-            Daily Chart
+          <div className="flex w-full">
+            <table className="table-auto flex w-full justify-evenly">
+              <thead className="w-full flex rounded-md border bg-[#0D1B52]/83  text-white">
+                <th className="w-[10%] py-3 ">No</th>
+                <th className="w-[30%] py-3 ">Item Name</th>
+                <th className="w-[20%] py-3 ">Price</th>
+                <th className="w-[20%] py-3 ">Qts</th>
+                <th className="w-[20%] py-3 ">Total</th>
+              </thead>
+            </table>
           </div>
         )}
 
         {activeTab === "weekly" && <WeeklyChart />}
 
         {activeTab === "monthly" && <MonthlyExpanse />}
+
       </div>
     </div>
   );
