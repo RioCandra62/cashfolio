@@ -10,7 +10,7 @@ export default function Sidebar() {
   };
 
   return (
-    <aside className="w-64 bg-[#0D1B52] text-white min-h-screen p-6">
+    <aside className="w-64 bg-[#0D1B52] text-white max-h-screen p-6 sticky top-0">
       <div className="text-2xl font-bold mb-10 flex items-center gap-2 rounded-md justify-center p-2 bg-white">
         {/* <div className="w-8 h-8 bg-white rounded-md"></div> */}
         <Image
