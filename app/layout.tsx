@@ -1,7 +1,5 @@
 import type { Metadata } from "next";
 import { StackProvider, StackTheme } from "@stackframe/stack";
-import { stackClientApp } from "../stack/client";
-import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 
 
@@ -17,9 +15,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body><StackProvider app={stackClientApp}><StackTheme>
+      <body>
         {children}
-      </StackTheme></StackProvider></body>
+      </body>
     </html>
   );
 }
