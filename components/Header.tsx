@@ -18,8 +18,6 @@ export default async function Header() {
         </div>
 
         <div className="flex items-center gap-5">
-          <span className="w-6 h-6 bg-gray-400 rounded-full"></span>
-          <span className="w-6 h-6 bg-gray-400 rounded-full"></span>
             <Image
               src="https://i.pravatar.cc/40"
               width={40}
