@@ -42,28 +42,34 @@ export async function getStockData(symbol: string = "^JKSE", range: string = "1m
 
 export async function getStockQuotes() {
   const symbols = ["^JKSE", "BBCA.JK", "BBRI.JK", "BMRI.JK", "TLKM.JK", "ASII.JK"];
-  const q = encodeURIComponent(symbols.join(","));
-  const url = `https://query1.finance.yahoo.com/v7/finance/quote?symbols=${q}`;
 
-  try {
-    const res = await fetch(url, { cache: "no-store" });
-    if (!res.ok) {
-      console.error("Yahoo quote response not ok", res.status, await res.text());
-      return [];
+  async function fetchOne(sym: string) {
+    const url = `https://query1.finance.yahoo.com/v7/finance/chart/${sym}`;
+    try {
+      const res = await fetch(url, { cache: "no-store" });
+      const json = await res.json();
+
+      const result = json?.chart?.result?.[0];
+      if (!result) return null;
+
+      return {
+        symbol: sym.replace(".JK", "").replace("^", ""),
+        price: result.meta?.regularMarketPrice ?? 0,
+        change: result.meta?.chartPreviousClose
+          ? result.meta.regularMarketPrice - result.meta.chartPreviousClose
+          : 0,
+        changePercent: result.meta?.chartPreviousClose
+          ? ((result.meta.regularMarketPrice - result.meta.chartPreviousClose) /
+              result.meta.chartPreviousClose) *
+            100
+          : 0,
+      };
+    } catch (err) {
+      console.error("Gagal fetch", sym, err);
+      return null;
     }
-
-    const json = await res.json();
-    const results = Array.isArray(json?.quoteResponse?.result) ? json.quoteResponse.result : [];
-
-    return results.map((stock: any) => ({
-      // normalisasi: hapus .JK dan caret ^ untuk frontend
-      symbol: String(stock.symbol || "").replace(".JK", "").replace("^", ""),
-      price: stock.regularMarketPrice ?? 0,
-      change: stock.regularMarketChange ?? 0,
-      changePercent: stock.regularMarketChangePercent ?? 0,
-    }));
-  } catch (error) {
-    console.error("Gagal fetch quotes:", error);
-    return [];
   }
+
+  const results = await Promise.all(symbols.map(fetchOne));
+  return results.filter(Boolean);
 }
