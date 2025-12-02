@@ -81,7 +81,7 @@ export default function Dashboard() {
         </div>
 
         {/* Card 3: Savings Goal */}
-        <div className="bg-gradient-to-br from-[#0D1B52] to-[#0D1B52]/90 text-white p-6 rounded-xl shadow-lg shadow-gray-900/10">
+        <a href="/dashboard/saving" className="bg-gradient-to-br from-[#0D1B52] to-[#0D1B52]/90 text-white p-6 rounded-xl shadow-lg shadow-gray-900/10">
            <div className="flex items-center gap-3 mb-4">
              <div className="p-2 bg-white/10 rounded-lg">
                <Target size={20} className="text-white" />
@@ -93,7 +93,7 @@ export default function Dashboard() {
              <div className="bg-blue-400 h-full rounded-full w-[70%] animate-pulse"></div>
            </div>
            <p className="text-xs text-gray-400 mt-2 text-right">70% Collected</p>
-        </div>
+        </a>
       </div>
 
       {/* 3. MAIN CONTENT GRID */}
@@ -104,7 +104,7 @@ export default function Dashboard() {
            <div className="bg-white rounded-xl shadow-sm border border-gray-100">
               <div className="p-6 border-b border-gray-100 flex justify-between items-center">
                  <h2 className="font-bold text-gray-800">Recent Transactions</h2>
-                 <a href="#" className="text-sm text-blue-600 hover:text-blue-700 font-medium">View All</a>
+                 <a href="/dashboard/expanse" className="text-sm text-blue-600 hover:text-blue-700 font-medium">View All</a>
               </div>
               
               <div className="divide-y divide-gray-50">

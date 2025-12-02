@@ -31,6 +31,12 @@ export default function Sidebar() {
           Dashboard
         </a>
         <a
+          className={`flex items-center gap-3 p-2 rounded-lg hover:bg-white/10 ${isActive('/dashboard/income')}`}
+          href="/dashboard/income"
+        >
+          Your Income
+        </a>
+        <a
           className={`flex items-center gap-3 p-2 rounded-lg hover:bg-white/10 ${isActive('/dashboard/expanse')}`}
           href="/dashboard/expanse"
         >
@@ -50,7 +56,7 @@ export default function Sidebar() {
         </a>
         <a
           className="flex items-center gap-3 p-2 rounded-lg hover:bg-white/10"
-          href="#"
+          href="/dashboard/saving"
         >
           Savings
         </a>
@@ -75,12 +81,12 @@ export default function Sidebar() {
         >
           Sales CRM
         </a>
-        <a
+        {/* <a
           className="flex items-center gap-3 p-2 rounded-lg hover:bg-white/10"
           href="#"
         >
           Project
-        </a>
+        </a> */}
       </nav>
 
       <div className="mt-10">

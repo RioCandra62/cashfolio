@@ -56,7 +56,7 @@ export default function StockHighlight({ data, symbol }: { data: any[]; symbol: 
     <div className="flex flex-row items-center">
       
       {/* 3. IMPLEMENTASI IMAGE DENGAN LOGIC */}
-      <div className="relative mr-6 bg-white rounded-full p-2 border border-gray-200">
+      <div className="relative mr-6 bg-white rounded-full border border-gray-200">
           <Image 
             src={activeLogo} // <--- Sumber gambar dinamis disini
             width={80}       // Saya kecilkan sedikit biar proporsional dengan text, ubah ke 120 kalau mau besar lagi
