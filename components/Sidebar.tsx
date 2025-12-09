@@ -1,10 +1,9 @@
 "use client";
-import Image from 'next/image';
-import { usePathname } from 'next/navigation';
+import Image from "next/image";
+import { usePathname } from "next/navigation";
 export default function Sidebar() {
-
   const pathname = usePathname();
-  
+
   const isActive = (path: string) => {
     return pathname === path ? "bg-white/10" : "hover:bg-white/10";
   };
@@ -25,28 +24,36 @@ export default function Sidebar() {
 
       <nav className="space-y-4 text-sm">
         <a
-          className={`flex items-center gap-3 p-2 rounded-lg ${isActive('/dashboard')}`}
+          className={`flex items-center gap-3 p-2 rounded-lg ${isActive(
+            "/dashboard"
+          )}`}
           href="/dashboard"
         >
           Dashboard
         </a>
         <a
-          className={`flex items-center gap-3 p-2 rounded-lg hover:bg-white/10 ${isActive('/dashboard/income')}`}
+          className={`flex items-center gap-3 p-2 rounded-lg hover:bg-white/10 ${isActive(
+            "/dashboard/budgetplan"
+          )}`}
+          href="/dashboard/budgetplan"
+        >
+          Budget Plan
+        </a>
+        <a
+          className={`flex items-center gap-3 p-2 rounded-lg hover:bg-white/10 ${isActive(
+            "/dashboard/income"
+          )}`}
           href="/dashboard/income"
         >
           Your Income
         </a>
         <a
-          className={`flex items-center gap-3 p-2 rounded-lg hover:bg-white/10 ${isActive('/dashboard/expanse')}`}
+          className={`flex items-center gap-3 p-2 rounded-lg hover:bg-white/10 ${isActive(
+            "/dashboard/expanse"
+          )}`}
           href="/dashboard/expanse"
         >
           Your Expanse
-        </a>
-        <a
-          className={`flex items-center gap-3 p-2 rounded-lg hover:bg-white/10 ${isActive('/dashboard/budgetplan')}`}
-          href="/dashboard/budgetplan"
-        >
-          Budget Plan
         </a>
         <a
           className="flex items-center gap-3 p-2 rounded-lg hover:bg-white/10"

@@ -104,6 +104,26 @@ export async function logoutUser() {
 }
 
 
+// export async function getCurrentUser() {
+//   const cookieStore = await cookies();
+//   const sessionId = cookieStore.get("session_token")?.value;
+
+//   if (!sessionId) return null;
+
+//   const res = await pool.query(
+//     `SELECT 
+//        id,
+//        raw_json ->> 'display_name' AS name,
+//        raw_json ->> 'primary_email' AS email,
+//        raw_json ->> 'id' AS neon_uid
+//      FROM neon_auth.users_sync
+//      WHERE id = $1`,
+//     [sessionId]
+//   );
+
+//   return res.rows[0] || null;
+// }
+
 export async function getCurrentUser() {
   const cookieStore = await cookies();
   const sessionId = cookieStore.get("session_token")?.value;
@@ -112,7 +132,7 @@ export async function getCurrentUser() {
 
   const res = await pool.query(
     `SELECT 
-       id,
+       id AS user_id,
        raw_json ->> 'display_name' AS name,
        raw_json ->> 'primary_email' AS email
      FROM neon_auth.users_sync

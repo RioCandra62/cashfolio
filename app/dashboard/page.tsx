@@ -32,9 +32,6 @@ export default function Dashboard() {
           <h1 className="text-2xl font-bold text-gray-900">Financial Overview</h1>
           <p className="text-gray-500 text-sm mt-1">Track your spending and stick to your budget.</p>
         </div>
-        <button className="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2.5 rounded-lg text-sm font-medium shadow-lg shadow-blue-600/20 transition flex items-center gap-2">
-           + Add Expense
-        </button>
       </div>
 
       {/* 2. TOP STATS CARDS (Financial Health) */}
