@@ -1,5 +1,6 @@
 "use client";
 
+import AddSaving from "@/components/saving/addSaving";
 import {
   Plus,
   Target,
@@ -8,6 +9,8 @@ import {
   TrendingUp,
   ArrowRight,
 } from "lucide-react";
+import { useState } from "react";
+
 
 export default function Saving() {
   const target = 20000000;
@@ -50,6 +53,8 @@ export default function Saving() {
 
   const progress = Math.floor((saved / target) * 100);
 
+  const [showModal, setShowModal] = useState(false);
+
   const formatNum = (n: number) => new Intl.NumberFormat("id-ID").format(n);
   // Mock Data Global (Total dari semua goals)
   const totalTargetGlobal = savingStats.reduce((acc, curr) => acc + curr.target, 0);
@@ -68,7 +73,7 @@ export default function Saving() {
               Wujudkan impianmu satu per satu.
             </p>
           </div>
-          <button className="flex items-center gap-2 px-5 py-2.5 bg-[#0D1B52] text-white rounded-xl shadow-lg shadow-blue-900/20 hover:bg-[#1a2d75] hover:scale-105 transition-all active:scale-95">
+          <button onClick={() => setShowModal(true)} className="flex items-center gap-2 px-5 py-2.5 bg-[#0D1B52] text-white rounded-xl shadow-lg shadow-blue-900/20 hover:bg-[#1a2d75] hover:scale-105 transition-all active:scale-95">
             <Plus size={18} />
             <span className="font-medium">Create New Goal</span>
           </button>
@@ -194,6 +199,7 @@ export default function Saving() {
         })}
         {/* End Loop */}
       </div>
+      <AddSaving isOpen={showModal} onClose={() => setShowModal(false)} />
     </div>
   );
 }

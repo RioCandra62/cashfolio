@@ -7,12 +7,17 @@ import {
   PiggyBank,
   AlertCircle,
   MoreHorizontal,
+  ShoppingBag,
+  Car,
+  Coffee,
   Plus,
   PieChart as PieChartIcon,
   ArrowUpRight,
   ArrowDownRight,
 } from "lucide-react";
 import AddBudget from "@/components/budget/addBudget";
+
+import { colorFromString } from "@/lib/color";
 
 import { fetchTotalBudget, getUserBudget } from "@/lib/budget";
 
@@ -69,6 +74,8 @@ export default function BudgetPlannerPage() {
 
   const [showAddModal, setShowAddModal] = useState(false);
 
+  const [category, setCategory] = useState<any[]>([]);
+
   useEffect(() => {
     async function load() {
       const result = await fetchTotalBudget();
@@ -84,6 +91,13 @@ export default function BudgetPlannerPage() {
       const res = await getUserBudget();
       setData(res);
     }
+
+    async function getCategory() {
+      const cat = await getUserBudget();
+      setCategory(cat);
+    }
+
+    getCategory();
     load();
   }, []);
 
@@ -175,42 +189,42 @@ export default function BudgetPlannerPage() {
       </div>
 
       {/* 2. MIDDLE SECTION (CHART & ANALYTICS) */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 h-auto lg:h-96">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 h-auto lg:h-96">
         {/* Main Chart Area (Ganti "Line Chart") */}
-        <div className="lg:col-span-2 bg-white p-6 rounded-2xl shadow-sm border border-slate-100 flex flex-col">
-          <div className="flex justify-between items-center mb-6">
-            <h3 className="font-bold text-slate-800">Analisis Pengeluaran</h3>
-            <select className="text-sm border-none bg-slate-50 text-slate-600 rounded-lg px-3 py-1 outline-none cursor-pointer hover:bg-slate-100 transition">
-              <option>Bulan Ini</option>
-              <option>Bulan Lalu</option>
-            </select>
-          </div>
+        <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+          <h2 className="font-bold text-gray-800 mb-6">Budget Limits</h2>
+          {/* Budget Item 1 */}
+          {category.map((cat) => {
+            const color = colorFromString(cat.name);
 
-          {/* Simulasi Chart Visual (Pake CSS Flex) */}
-          <div className="flex-1 flex items-end justify-between gap-2 px-4 pb-2 border-b border-slate-100">
-            {[40, 65, 30, 85, 50, 60, 90, 45, 70, 55, 35, 60].map((h, i) => (
-              <div
-                key={i}
-                className="group relative flex-1 bg-slate-100 rounded-t-lg hover:bg-blue-100 transition-all cursor-pointer h-full flex items-end"
-              >
-                <div
-                  style={{ height: `${h}%` }}
-                  className="w-full bg-blue-500 rounded-t-md group-hover:bg-blue-600 transition-all relative"
-                >
-                  {/* Tooltip on hover */}
-                  <div className="absolute -top-8 left-1/2 -translate-x-1/2 bg-slate-800 text-white text-[10px] py-1 px-2 rounded opacity-0 group-hover:opacity-100 transition">
-                    {h}%
-                  </div>
+            return (
+              <div className="mb-6" key={cat.id}>
+                <div className="flex justify-between text-sm mb-2">
+                  <span className="font-medium text-gray-700 flex items-center gap-2">
+                    {cat.name}
+                  </span>
+
+                  <span className="font-bold" style={{ color }}>
+                    85%
+                  </span>
                 </div>
+
+                <div className="w-full bg-gray-100 rounded-full h-2">
+                  <div
+                    className="h-2 rounded-full"
+                    style={{
+                      width: "85%",
+                      backgroundColor: color,
+                    }}
+                  ></div>
+                </div>
+
+                <p className="text-xs text-gray-400 mt-1">
+                  Sisa {formatRupiah(150000)} dari {formatRupiah(1000000)}
+                </p>
               </div>
-            ))}
-          </div>
-          <div className="flex justify-between text-xs text-slate-400 mt-3 px-2">
-            <span>Minggu 1</span>
-            <span>Minggu 2</span>
-            <span>Minggu 3</span>
-            <span>Minggu 4</span>
-          </div>
+            );
+          })}
         </div>
 
         {/* Sidebar / Pie Area (Ganti "Pie Chart") */}
@@ -293,7 +307,6 @@ export default function BudgetPlannerPage() {
               </div>
 
               {/* Progress Bar */}
-     
             </div>
           ))}
         </div>

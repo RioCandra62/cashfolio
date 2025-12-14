@@ -82,12 +82,6 @@ export default function Sidebar() {
         >
           User Profile
         </a>
-        <a
-          className="flex items-center gap-3 p-2 rounded-lg hover:bg-white/10"
-          href="#"
-        >
-          Sales CRM
-        </a>
         {/* <a
           className="flex items-center gap-3 p-2 rounded-lg hover:bg-white/10"
           href="#"
