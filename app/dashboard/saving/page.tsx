@@ -1,6 +1,14 @@
 "use client";
 
 import AddSaving from "@/components/saving/addSaving";
+import Tabung from "@/components/saving/tabung";
+import {
+  getCompleteSaving,
+  getNumberSaving,
+  getTotalSaving,
+  getTotalTarget,
+  getUserSaving,
+} from "@/lib/saving";
 import {
   Plus,
   Target,
@@ -9,57 +17,58 @@ import {
   TrendingUp,
   ArrowRight,
 } from "lucide-react";
-import { useState } from "react";
-
+import { useEffect, useState } from "react";
 
 export default function Saving() {
-  const target = 20000000;
-  const saved = 18000000;
-
-  const savingStats = [
-    {
-      id: 1,
-      savingGoal: "Macbook Pro M4",
-      target: 25000000,
-      saved: 20000000,
-      category: "Gadget",
-      deadline: "Des 2025",
-    },
-    {
-      id: 2,
-      savingGoal: "Dana Darurat",
-      target: 50000000,
-      saved: 12500000,
-      category: "Finance",
-      deadline: "Aman",
-    },
-    {
-      id: 3,
-      savingGoal: "Liburan Jepang",
-      target: 30000000,
-      saved: 5000000,
-      category: "Travel",
-      deadline: "Jun 2026",
-    },
-    {
-      id: 4,
-      savingGoal: "DP Rumah",
-      target: 150000000,
-      saved: 45000000,
-      category: "Property",
-      deadline: "2030",
-    },
-  ];
-
-  const progress = Math.floor((saved / target) * 100);
-
   const [showModal, setShowModal] = useState(false);
+  const formatRupiah = (num: number) => {
+    return new Intl.NumberFormat("id-ID", {
+      style: "currency",
+      currency: "IDR",
+      maximumFractionDigits: 0,
+    }).format(num);
+  };
 
-  const formatNum = (n: number) => new Intl.NumberFormat("id-ID").format(n);
-  // Mock Data Global (Total dari semua goals)
-  const totalTargetGlobal = savingStats.reduce((acc, curr) => acc + curr.target, 0);
-  const totalSavedGlobal = savingStats.reduce((acc, curr) => acc + curr.saved, 0);
-  const globalProgress = Math.floor((totalSavedGlobal / totalTargetGlobal) * 100);
+  const [saving, setSaving] = useState<any[]>([]);
+  const [activeSavingId, setActiveSavingId] = useState<string | null>(null);
+  const [totalSaved, setTotalSaved] = useState(0);
+  const [totalTarget, setTotalTarget] = useState(0);
+  const [numberSaving, setNumberSaving] = useState(0);
+  const [complete, setComplete] = useState(0);
+  const globalPercentage = Math.round((totalSaved / totalTarget) * 100);
+
+  useEffect(() => {
+    async function getSaving() {
+      const save = await getUserSaving();
+      setSaving(save);
+    }
+
+    async function getSaved() {
+      const get = await getTotalSaving();
+      setTotalSaved(get);
+    }
+
+    async function getTarget() {
+      const target = await getTotalTarget();
+      setTotalTarget(target);
+    }
+
+    async function getNumber() {
+      const get = await getNumberSaving();
+      setNumberSaving(get);
+    }
+
+    async function getComplete() {
+      const get = await getCompleteSaving();
+      setComplete(get);
+    }
+
+    getComplete();
+    getNumber();
+    getTarget();
+    getSaved();
+    getSaving();
+  });
 
   return (
     <div className="flex flex-col gap-12">
@@ -73,7 +82,10 @@ export default function Saving() {
               Wujudkan impianmu satu per satu.
             </p>
           </div>
-          <button onClick={() => setShowModal(true)} className="flex items-center gap-2 px-5 py-2.5 bg-[#0D1B52] text-white rounded-xl shadow-lg shadow-blue-900/20 hover:bg-[#1a2d75] hover:scale-105 transition-all active:scale-95">
+          <button
+            onClick={() => setShowModal(true)}
+            className="flex items-center gap-2 px-5 py-2.5 bg-[#0D1B52] text-white rounded-xl shadow-lg shadow-blue-900/20 hover:bg-[#1a2d75] hover:scale-105 transition-all active:scale-95"
+          >
             <Plus size={18} />
             <span className="font-medium">Create New Goal</span>
           </button>
@@ -87,15 +99,14 @@ export default function Saving() {
               <div className="p-2 bg-white/20 rounded-lg backdrop-blur-sm">
                 <Wallet size={20} className="text-white" />
               </div>
-              <span className="flex items-center gap-1 text-xs font-medium bg-emerald-500/50 px-2 py-1 rounded-full border border-emerald-400/50">
-                <TrendingUp size={12} /> +12%
-              </span>
             </div>
             <div className="mt-4">
               <p className="text-emerald-100 text-sm font-medium">
                 Total Tabungan
               </p>
-              <h3 className="text-3xl font-bold mt-1">Rp {formatNum(saved)}</h3>
+              <h3 className="text-3xl font-bold mt-1">
+                {formatRupiah(totalSaved)}{" "}
+              </h3>
             </div>
           </div>
           {/* Card 2: Total Target Global */}
@@ -105,18 +116,18 @@ export default function Saving() {
                 Total Target (Global)
               </p>
               <h3 className="text-2xl font-bold text-gray-900">
-                IDR {formatNum(totalTargetGlobal)}
+                {formatRupiah(totalTarget)}
               </h3>
 
               {/* Mini Progress Bar Global */}
               <div className="mt-3 w-full bg-gray-100 h-1.5 rounded-full overflow-hidden">
                 <div
                   className="h-full bg-indigo-500 rounded-full"
-                  style={{ width: `${globalProgress}%` }}
+                  style={{ width: globalPercentage }}
                 ></div>
               </div>
               <p className="text-xs text-gray-400 mt-1 text-right">
-                {globalProgress}% Terkumpul
+                {globalPercentage}% Terkumpul
               </p>
             </div>
             <div className="h-12 w-12 min-w-[3rem] bg-indigo-50 rounded-xl flex items-center justify-center text-indigo-600">
@@ -131,9 +142,11 @@ export default function Saving() {
                 Goals Aktif
               </p>
               <h3 className="text-2xl font-bold text-gray-900">
-                {formatNum(totalTargetGlobal)}
+                {numberSaving - complete}
               </h3>
-              <p className="text-xs text-gray-400 mt-1">2 tercapai tahun ini</p>
+              <p className="text-xs text-gray-400 mt-1">
+                {complete} tercapai tahun ini
+              </p>
             </div>
             <div className="h-12 w-12 bg-orange-50 rounded-xl flex items-center justify-center text-orange-600">
               <Wallet size={24} />
@@ -141,65 +154,76 @@ export default function Saving() {
           </div>
         </div>
       </div>
-
       <div className="grid grid-cols-2 gap-12">
-        {savingStats.map((item) => {
-          
-          // 3. Logic Hitung Progress (Per Item)
-          const progress = Math.floor((item.saved / item.target) * 100);
-          const remaining = item.target - item.saved;
-
-          return (
-            <div 
-              key={item.id} 
-              className="w-full border-l-[5px] border-blue-600 bg-white rounded-md shadow-lg p-6 flex flex-col gap-4"
-            >
-              <div className="flex flex-row justify-between">
-                <div className="flex flex-col">
-                  {/* Ganti hardcode jadi dynamic data */}
-                  <p className="text-lg font-semibold">{item.savingGoal}</p>
-                  <p className="text-sm text-gray-500">Saving Goal</p>
-                </div>
-                <div className="flex flex-col">
-                  <p className="text-sm text-right text-gray-500">Target</p>
-                  <p className="text-lg font-semibold">IDR {formatNum(item.target)}</p>
-                </div>
+        {saving.map((sv) => (
+          <div
+            key={sv.id}
+            className="w-full border-l-[5px] border-blue-600 bg-white rounded-md shadow-lg p-6 flex flex-col gap-4"
+          >
+            <div className="flex flex-row justify-between">
+              <div className="flex flex-col">
+                {/* Ganti hardcode jadi dynamic data */}
+                <p className="text-lg font-semibold">{sv.title}</p>
+                <p className="text-sm text-gray-500">Saving Goal</p>
               </div>
-
-              {/* Progress Bar Section */}
-              <div className="flex flex-row items-center gap-8">
-                <div className="w-full bg-gray-200 h-2 rounded-full overflow-hidden">
-                  <div
-                    className="h-full bg-gradient-to-r from-green-400 to-emerald-500 transition-all duration-500"
-                    style={{ width: `${progress}%` }}
-                  ></div>
-                </div>
-                <p className="font-medium text-gray-700 min-w-[3rem] text-right">{progress}%</p>
+              <div className="flex flex-col">
+                <p className="text-sm text-right text-gray-500">Target</p>
+                <p className="text-lg font-semibold">
+                  {formatRupiah(sv.target)}
+                </p>
               </div>
+            </div>
 
-              <div className="h-px bg-gray-200"></div>
+            {/* Progress Bar Section */}
+            <div className="flex flex-row items-center gap-8">
+              <div className="w-full bg-gray-200 h-2 rounded-full overflow-hidden">
+                <div
+                  className="h-full bg-gradient-to-r from-green-400 to-emerald-500 transition-all duration-500"
+                  style={{ width: `${Math.round((sv.saved / sv.target) * 100)}` }}
+                ></div>
+              </div>
+              <p className="font-medium text-gray-700 min-w-[3rem] text-right">
+                {Math.round((sv.saved / sv.target) * 100)} %
+              </p>
+            </div>
 
-              {/* Footer Section (Saved & Remaining) */}
-              <div className="flex flex-row justify-between">
+            <div className="h-px bg-gray-200"></div>
+
+            {/* Footer Section (Saved & Remaining) */}
+            <div className="flex flex-row justify-between">
+              <div className="flex flex-col gap-2">
                 <div className="justify-between text-sm text-gray-700 flex flex-col">
                   <p>Saved: </p>
                   <span className="font-semibold text-lg">
-                    IDR {formatNum(item.saved)}
-                  </span>
-                </div>
-                <div className="justify-between text-sm text-gray-700 flex flex-col">
-                  <p className="text-right">Remaining: </p>
-                  <span className="font-semibold text-lg text-emerald-600 text-right">
-                    IDR {formatNum(remaining)}
+                    {formatRupiah(sv.saved)}
                   </span>
                 </div>
               </div>
+              <div className="justify-between text-sm text-gray-700 flex flex-col">
+                <p className="text-right">Remaining: </p>
+                <span className="font-semibold text-lg text-emerald-600 text-right">
+                  {formatRupiah(sv.target - sv.saved)}
+                </span>
+              </div>
             </div>
-          );
-        })}
-        {/* End Loop */}
+            <button
+              disabled={sv.target === sv.saved}
+              onClick={() => setActiveSavingId(sv.id)}
+              className={`${sv.target === sv.saved ? "bg-sky-800" : "bg-blue-600"} text-white px-2 py-1 rounded-lg w-fit`}
+            >
+              {sv.target === sv.saved ? "Complete" : "Tabung"}
+            </button>
+          </div>
+        ))}
       </div>
       <AddSaving isOpen={showModal} onClose={() => setShowModal(false)} />
+
+      {activeSavingId && (
+        <Tabung
+          savingId={activeSavingId}
+          onClose={() => setActiveSavingId(null)}
+        />
+      )}
     </div>
   );
 }

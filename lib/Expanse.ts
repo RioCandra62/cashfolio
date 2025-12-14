@@ -26,7 +26,7 @@ export async function createExpense(form: FormData) {
       `INSERT INTO transactions 
         (user_id, title, amount, transaction_date, category_id, payment)
        VALUES 
-        ($1, $2, $3, $4, $5, $6,)
+        ($1, $2, $3, $4, $5, $6)
        RETURNING *`,
       [user.user_id, item, amount, date, category, payment]
     );
