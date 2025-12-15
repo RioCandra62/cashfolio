@@ -10,24 +10,6 @@ export default function Tabs() {
   const [transactions, setTransactions] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // useEffect(() => {
-  //   const loadData = async () => {
-  //     try {
-  //       const res = await fetch("/api/expanse", {
-  //         cache: "no-store",
-  //       });
-  //       const data = await res.json();
-  //       setTransactions(data);
-  //     } finally {
-  //       setLoading(false);
-  //     }
-  //   };
-
-  //   loadData();
-  // }, []);
-
-
-
   return (
     <div className="flex-1">
       <div className="flex flex-row justify-between px-8 items-center">

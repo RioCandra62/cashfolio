@@ -140,7 +140,7 @@ export default function ExpensePage() {
 
   return (
     <>
-      <div className="flex flex-col h-screen bg-[#f8f9fc]">
+      <div className="flex flex-col bg-[#f8f9fc]">
         {checkCategory <= 0 ? (
           <p>Budget category tidak ditemukan</p>
         ) : checkExpanse <= 0 ? (
@@ -156,7 +156,7 @@ export default function ExpensePage() {
             </button>
           </div>
         ) : (
-          <div className="flex flex-col h-screen bg-[#f8f9fc]">
+          <div className="flex flex-col bg-[#f8f9fc]">
             {/* 1. HEADER & TABS */}
             <div className="px-8 pt-4 pb-4">
               {/* 2. STATS CARDS (EXPENSE FOCUS) */}
@@ -277,7 +277,7 @@ export default function ExpensePage() {
                       {/* KIRI: ICON + NAMA ITEM */}
                       <div className="flex items-center gap-4 w-1/3">
                         <div className="p-3 bg-rose-100 text-rose-600 rounded-xl group-hover:bg-rose-200 transition">
-                          <Coffee size={24} />
+                          {/* <Coffee size={24} /> */}
                         </div>
                         <div>
                           <h4 className="font-bold text-gray-900 text-base group-hover:text-rose-700 transition">
@@ -318,7 +318,7 @@ export default function ExpensePage() {
 
                       {/* AMOUNT */}
                       <div className="w-1/6 text-right">
-                        <p className="font-bold text-gray-900 text-lg text-red-500">
+                        <p className="font-bold text-lg text-red-500">
                           - Rp {Number(tx.amount).toLocaleString("id-ID")}
                         </p>
                       </div>

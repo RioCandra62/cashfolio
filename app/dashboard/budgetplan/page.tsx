@@ -21,40 +21,10 @@ import { colorFromString } from "@/lib/color";
 
 import { fetchTotalBudget, getUserBudget } from "@/lib/budget";
 
-// Mock Data untuk contoh
-const INITIAL_BUDGETS = [
-  {
-    id: 1,
-    category: "Makanan & Minuman",
-    limit: 3000000,
-    spent: 2100000,
-    color: "bg-orange-500",
-  },
-  {
-    id: 2,
-    category: "Transportasi",
-    limit: 1500000,
-    spent: 800000,
-    color: "bg-blue-500",
-  },
-  {
-    id: 3,
-    category: "Hiburan / Jajan",
-    limit: 1000000,
-    spent: 1200000,
-    color: "bg-rose-500",
-  }, // Over budget
-  {
-    id: 4,
-    category: "Tagihan & Utilities",
-    limit: 2000000,
-    spent: 1950000,
-    color: "bg-yellow-500",
-  },
-];
+import { PieChart, Pie } from "recharts";
+import DonutChart from "@/components/budget/pieChart";
 
 export default function BudgetPlannerPage() {
-  const [budgets, setBudgets] = useState(INITIAL_BUDGETS);
   const [totalBudget, setTotalBudget] = useState(0);
 
   // Helper formatting
@@ -67,11 +37,6 @@ export default function BudgetPlannerPage() {
   };
 
   // Kalkulasi Total
-  const totalLimit = budgets.reduce((acc, curr) => acc + curr.limit, 0);
-  const totalSpent = budgets.reduce((acc, curr) => acc + curr.spent, 0);
-  const remaining = totalLimit - totalSpent;
-  const spentPercentage = Math.round((totalSpent / totalLimit) * 100);
-
   const [showAddModal, setShowAddModal] = useState(false);
 
   const [category, setCategory] = useState<any[]>([]);
@@ -101,6 +66,13 @@ export default function BudgetPlannerPage() {
     load();
   }, []);
 
+  const dataPie = [
+    { name: "Group A", value: 400, fill: "#0088FE" },
+    { name: "Group B", value: 300, fill: "#00C49F" },
+    { name: "Group C", value: 300, fill: "#FFBB28" },
+    { name: "Group D", value: 200, fill: "#FF8042" },
+  ];
+
   return (
     <div className="flex flex-col gap-6 bg-[#f8f9fc] min-h-screen p-8 font-sans text-slate-800">
       {/* HEADER SECTION */}
@@ -127,9 +99,6 @@ export default function BudgetPlannerPage() {
             <div className="p-2 bg-blue-50 text-blue-600 rounded-lg">
               <Wallet size={20} />
             </div>
-            <span className="text-xs font-semibold bg-green-50 text-green-700 px-2 py-1 rounded-full flex items-center gap-1">
-              <ArrowUpRight size={12} /> +12%
-            </span>
           </div>
           <div className="z-10">
             <p className="text-slate-500 text-sm font-medium">Total Anggaran</p>
@@ -151,19 +120,15 @@ export default function BudgetPlannerPage() {
           <div>
             <div className="flex justify-between items-end mb-1">
               <p className="text-slate-500 text-sm font-medium">Terpakai</p>
-              <span className="text-sm font-bold text-slate-700">
-                {spentPercentage}%
-              </span>
+              <span className="text-sm font-bold text-slate-700"></span>
             </div>
             <div className="w-full bg-slate-100 h-2.5 rounded-full overflow-hidden">
               <div
                 className="bg-orange-500 h-full rounded-full transition-all duration-500"
-                style={{ width: `${spentPercentage}%` }}
+                style={{ width: `` }}
               ></div>
             </div>
-            <p className="text-xs text-slate-400 mt-2">
-              {formatRupiah(totalSpent)} digunakan
-            </p>
+            <p className="text-xs text-slate-400 mt-2">digunakan</p>
           </div>
         </div>
 
@@ -181,9 +146,7 @@ export default function BudgetPlannerPage() {
             <p className="text-emerald-100 text-sm font-medium">
               Sisa Anggaran
             </p>
-            <h3 className="text-2xl font-bold mt-1">
-              {formatRupiah(remaining)}
-            </h3>
+            <h3 className="text-2xl font-bold mt-1"></h3>
           </div>
         </div>
       </div>
@@ -229,49 +192,10 @@ export default function BudgetPlannerPage() {
 
         {/* Sidebar / Pie Area (Ganti "Pie Chart") */}
         <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 flex flex-col">
-          <div className="flex justify-between items-center mb-4">
-            <h3 className="font-bold text-slate-800">Distribusi</h3>
-            <PieChartIcon size={18} className="text-slate-400" />
-          </div>
-
-          {/* CSS Only Pie Chart using Conic Gradient */}
-          <div className="flex-1 flex items-center justify-center py-4">
-            <div
-              className="relative w-48 h-48 rounded-full"
-              style={{
-                background: `conic-gradient(
-                      #f97316 0% 35%, 
-                      #3b82f6 35% 60%, 
-                      #eab308 60% 85%, 
-                      #f43f5e 85% 100%
-                    )`,
-              }}
-            >
-              {/* Inner White Circle to make it a Donut */}
-              <div className="absolute inset-4 bg-white rounded-full flex flex-col items-center justify-center">
-                <span className="text-3xl font-bold text-slate-800">4</span>
-                <span className="text-xs text-slate-400">Categories</span>
-              </div>
-            </div>
-          </div>
-
-          {/* Legend */}
-          <div className="space-y-3 mt-2">
-            {budgets.slice(0, 3).map((b) => (
-              <div
-                key={b.id}
-                className="flex items-center justify-between text-sm"
-              >
-                <div className="flex items-center gap-2">
-                  <div className={`w-3 h-3 rounded-full ${b.color}`}></div>
-                  <span className="text-slate-600">{b.category}</span>
-                </div>
-                <span className="font-medium text-slate-900">
-                  {Math.round((b.limit / totalLimit) * 100)}%
-                </span>
-              </div>
-            ))}
-          </div>
+          <DonutChart
+            labels={["Makan", "Transport", "Hiburan", "Tagihan"]}
+            values={[1500000, 500000, 300000, 700000]}
+          />
         </div>
       </div>
 
@@ -286,7 +210,10 @@ export default function BudgetPlannerPage() {
 
         <div className="p-6 grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-8">
           {data.map((bd) => (
-            <div className="w-full bg-white rounded-xl p-6 shadow-sm border border-gray-100 hover:shadow-md transition-shadow duration-300">
+            <div
+              key={bd.id}
+              className="w-full bg-white rounded-xl p-6 shadow-sm border border-gray-100 hover:shadow-md transition-shadow duration-300"
+            >
               {/* Header */}
               <div className="flex flex-row justify-between items-start">
                 <div className="flex flex-col">
