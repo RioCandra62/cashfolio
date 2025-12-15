@@ -19,10 +19,17 @@ import AddBudget from "@/components/budget/addBudget";
 
 import { colorFromString } from "@/lib/color";
 
-import { fetchTotalBudget, getUserBudget } from "@/lib/budget";
+import {
+  fetchTotalBudget,
+  getBudgetLimitByID,
+  getUserBudget,
+} from "@/lib/budget";
+
+import { generatePastelColors } from "@/lib/color";
 
 import { PieChart, Pie } from "recharts";
 import DonutChart from "@/components/budget/pieChart";
+import { fetchTotalExpense } from "@/lib/Expanse";
 
 export default function BudgetPlannerPage() {
   const [totalBudget, setTotalBudget] = useState(0);
@@ -40,6 +47,12 @@ export default function BudgetPlannerPage() {
   const [showAddModal, setShowAddModal] = useState(false);
 
   const [category, setCategory] = useState<any[]>([]);
+
+  const [limbudget, setLimitBudget] = useState<any[]>([]);
+
+  const [totalExpanse, setTotalExpanse] = useState(0);
+
+  const [budget, setUserBudget] = useState<any[]>([]);
 
   useEffect(() => {
     async function load() {
@@ -62,6 +75,18 @@ export default function BudgetPlannerPage() {
       setCategory(cat);
     }
 
+    async function getbudlimit() {
+      const res = await getBudgetLimitByID();
+      setLimitBudget(res);
+    }
+
+    async function getTotalExpanse() {
+      const res = await fetchTotalExpense();
+      setTotalExpanse(res);
+    }
+
+    getTotalExpanse();
+    getbudlimit();
     getCategory();
     load();
   }, []);
@@ -72,6 +97,10 @@ export default function BudgetPlannerPage() {
     { name: "Group C", value: 300, fill: "#FFBB28" },
     { name: "Group D", value: 200, fill: "#FF8042" },
   ];
+
+  const globalPercentage = (totalExpanse / totalBudget) * 100;
+
+  const colors = generatePastelColors(category.length);
 
   return (
     <div className="flex flex-col gap-6 bg-[#f8f9fc] min-h-screen p-8 font-sans text-slate-800">
@@ -120,15 +149,19 @@ export default function BudgetPlannerPage() {
           <div>
             <div className="flex justify-between items-end mb-1">
               <p className="text-slate-500 text-sm font-medium">Terpakai</p>
-              <span className="text-sm font-bold text-slate-700"></span>
+              <span className="text-sm font-bold text-slate-700">
+                {formatRupiah(totalExpanse)}
+              </span>
             </div>
             <div className="w-full bg-slate-100 h-2.5 rounded-full overflow-hidden">
               <div
                 className="bg-orange-500 h-full rounded-full transition-all duration-500"
-                style={{ width: `` }}
+                style={{ width: `${globalPercentage}%` }}
               ></div>
             </div>
-            <p className="text-xs text-slate-400 mt-2">digunakan</p>
+            <p className="text-xs text-slate-400 mt-2">
+              {globalPercentage}% digunakan
+            </p>
           </div>
         </div>
 
@@ -146,7 +179,9 @@ export default function BudgetPlannerPage() {
             <p className="text-emerald-100 text-sm font-medium">
               Sisa Anggaran
             </p>
-            <h3 className="text-2xl font-bold mt-1"></h3>
+            <h3 className="text-2xl font-bold mt-1">
+              {formatRupiah(totalBudget - totalExpanse)}
+            </h3>
           </div>
         </div>
       </div>
@@ -157,8 +192,8 @@ export default function BudgetPlannerPage() {
         <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
           <h2 className="font-bold text-gray-800 mb-6">Budget Limits</h2>
           {/* Budget Item 1 */}
-          {category.map((cat) => {
-            const color = colorFromString(cat.name);
+          {limbudget.map((cat, index) => {
+            const color = colors[index];
 
             return (
               <div className="mb-6" key={cat.id}>
@@ -168,7 +203,7 @@ export default function BudgetPlannerPage() {
                   </span>
 
                   <span className="font-bold" style={{ color }}>
-                    85%
+                    {Math.floor(cat.percentage)}%
                   </span>
                 </div>
 
@@ -176,14 +211,15 @@ export default function BudgetPlannerPage() {
                   <div
                     className="h-2 rounded-full"
                     style={{
-                      width: "85%",
+                      width: `${!cat.percentage ? "0" : cat.percentage}%`,
                       backgroundColor: color,
                     }}
                   ></div>
                 </div>
 
                 <p className="text-xs text-gray-400 mt-1">
-                  Sisa {formatRupiah(150000)} dari {formatRupiah(1000000)}
+                  Sisa {formatRupiah(cat.remaining)} dari{" "}
+                  {formatRupiah(cat.budget)}
                 </p>
               </div>
             );
@@ -191,11 +227,10 @@ export default function BudgetPlannerPage() {
         </div>
 
         {/* Sidebar / Pie Area (Ganti "Pie Chart") */}
-        <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 flex flex-col">
-          <DonutChart
-            labels={["Makan", "Transport", "Hiburan", "Tagihan"]}
-            values={[1500000, 500000, 300000, 700000]}
-          />
+        <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 flex justify-center items-center">
+          <div className="w-72 h-72">
+            <DonutChart data={category} colors={colors} />
+          </div>
         </div>
       </div>
 
@@ -209,33 +244,37 @@ export default function BudgetPlannerPage() {
         </div>
 
         <div className="p-6 grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-8">
-          {data.map((bd) => (
-            <div
-              key={bd.id}
-              className="w-full bg-white rounded-xl p-6 shadow-sm border border-gray-100 hover:shadow-md transition-shadow duration-300"
-            >
-              {/* Header */}
-              <div className="flex flex-row justify-between items-start">
-                <div className="flex flex-col">
-                  <p className="text-lg font-semibold text-gray-800">
-                    {bd.name}
-                  </p>
-                  <p className="text-xs text-gray-500 tracking-wide">
-                    Category
-                  </p>
+          {limbudget.map((bd, index) => {
+            const color = colors[index];
+            return (
+              <div
+                key={bd.id}
+                className="w-full bg-white rounded-xl p-6 shadow-sm border border-gray-100 hover:shadow-md transition-shadow duration-300 border-b-5"
+                style={{ borderBottomColor: color }}
+              >
+                {/* Header */}
+                <div className="flex flex-row justify-between items-start">
+                  <div className="flex flex-col">
+                    <p className="text-lg font-semibold text-gray-800">
+                      {bd.name}
+                    </p>
+                    <p className="text-xs text-gray-500 tracking-wide">
+                      Category
+                    </p>
+                  </div>
+
+                  <div className="flex flex-col items-end">
+                    <p className="text-xs text-gray-500">Budget</p>
+                    <p className="text-xl font-bold text-gray-900">
+                      {formatRupiah(bd.budget)}
+                    </p>
+                  </div>
                 </div>
 
-                <div className="flex flex-col items-end">
-                  <p className="text-xs text-gray-500">Budget</p>
-                  <p className="text-xl font-bold text-gray-900">
-                    {formatRupiah(bd.budget)}
-                  </p>
-                </div>
+                {/* Progress Bar */}
               </div>
-
-              {/* Progress Bar */}
-            </div>
-          ))}
+            );
+          })}
         </div>
       </div>
       <AddBudget isOpen={showAddModal} onClose={() => setShowAddModal(false)} />

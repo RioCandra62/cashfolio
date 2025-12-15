@@ -374,6 +374,7 @@ export default function AddExpense({
                   <option value="QRIS">Qris</option>
                   <option value="Debit">Debit</option>
                   <option value="Credit">Credit</option>
+                  <option value="Transfer">Transfer</option>
                 </select>
               </div>
             </div>

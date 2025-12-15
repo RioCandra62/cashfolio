@@ -96,28 +96,49 @@ export async function getCatNumber() {
   if (!user) return 0;
 
   const count = await pool.query(
-    `SELECT COUNT(*) FROM budgeting WHERE user_id = $1`, [user.user_id]
-  )
+    `SELECT COUNT(*) FROM budgeting WHERE user_id = $1`,
+    [user.user_id]
+  );
 
   return Number(count.rows[0]?.count ?? 0);
 }
 
+export async function getCategory() {
+  const user = await getCurrentUser();
+  if (!user) return [];
 
-export async function getCategory(){
-    const user = await getCurrentUser();
-    if(!user) return [];
+  const cat = await pool.query(`SELECT * FROM categories WHERE user_id = $1`, [
+    user.user_id,
+  ]);
 
-    const cat = await pool.query(`SELECT * FROM categories WHERE user_id = $1`, [user.user_id])
-
-    return cat.rows;
+  return cat.rows;
 }
 
-export async function getTotalBudget(){
-    const user = await getCurrentUser();
-    if(!user) return 0;
+export async function getTotalBudget() {
+  const user = await getCurrentUser();
+  if (!user) return 0;
 
-    const total = await pool.query(
-        `SELECT SUM(budget) AS total FROM budgeting WHERE user_id = $1`, [user.user_id]
-    )
-    return Number(total.rows[0]?.total || 0);
+  const total = await pool.query(
+    `SELECT SUM(budget) AS total FROM budgeting WHERE user_id = $1`,
+    [user.user_id]
+  );
+  return Number(total.rows[0]?.total || 0);
+}
+
+export async function getBudgetLimitByID() {
+  const user = await getCurrentUser();
+  if (!user) return [];
+
+  const res = await pool.query(
+    `SELECT categories.name, budgeting.budget, SUM(transactions.amount), 
+SUM(transactions.amount) / budgeting.budget * 100 as percentage, 
+budgeting.budget - SUM(transactions.amount) as remaining 
+FROM categories JOIN budgeting 
+ON categories.id = budgeting.category_id LEFT JOIN transactions 
+ON categories.id = transactions.category_id WHERE categories.user_id = $1 
+GROUP BY categories.name, budgeting.budget`,
+    [user.user_id]
+  );
+
+  return res.rows;
 }
