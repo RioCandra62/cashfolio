@@ -17,7 +17,7 @@ export default async function Header() {
           </p>
         </div>
 
-        <div className="flex items-center gap-5">
+        <a href='/dashboard/profile' className="flex items-center gap-5">
             <Image
               src="https://i.pravatar.cc/40"
               width={40}
@@ -26,7 +26,7 @@ export default async function Header() {
               unoptimized
               className="rounded-full"
             />
-        </div>
+        </a>
       </div>
     </>
   );
