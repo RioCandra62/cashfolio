@@ -142,3 +142,20 @@ GROUP BY categories.name, budgeting.budget`,
 
   return res.rows;
 }
+
+export async function expanseWithoutSaving(){
+    const user = await getCurrentUser();
+  if (!user) return 0;
+
+  const res = await pool.query(
+    `
+      SELECT SUM(amount) AS total
+      FROM transactions
+      WHERE user_id = $1 AND category_id IS NOT NULL AND title != 'Nabung'
+    `,
+    [user.user_id]
+  );
+
+  return Number(res.rows[0]?.total || 0);
+}
+

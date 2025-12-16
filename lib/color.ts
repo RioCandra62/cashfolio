@@ -3,11 +3,13 @@ export function generatePastelColors(n: number): string[] {
   const colors: string[] = [];
 
   for (let i = 0; i < n; i++) {
-    const hue = Math.floor(Math.random() * 360); // random hue
-    const saturation = 40 + Math.floor(Math.random() * 20); // 40-60%
-    const lightness = 80 + Math.floor(Math.random() * 10); // 80-90%
+    const hue = Math.floor(Math.random() * 360);
+    const saturation = 65 + Math.floor(Math.random() * 28); // 65–80%
+    const lightness = 45 + Math.floor(Math.random() * 14);  // 45–55%
+
     colors.push(`hsl(${hue}, ${saturation}%, ${lightness}%)`);
   }
+
   return colors;
 }
 

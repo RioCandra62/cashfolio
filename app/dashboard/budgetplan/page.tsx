@@ -20,6 +20,7 @@ import AddBudget from "@/components/budget/addBudget";
 import { colorFromString } from "@/lib/color";
 
 import {
+  expanseWithoutSaving,
   fetchTotalBudget,
   getBudgetLimitByID,
   getUserBudget,
@@ -81,7 +82,7 @@ export default function BudgetPlannerPage() {
     }
 
     async function getTotalExpanse() {
-      const res = await fetchTotalExpense();
+      const res = await expanseWithoutSaving();
       setTotalExpanse(res);
     }
 

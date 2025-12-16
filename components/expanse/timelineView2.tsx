@@ -27,6 +27,7 @@ import {
 } from "@/lib/Expanse";
 
 import { getCatNumber, getTotalBudget } from "@/lib/budget";
+import { colorFromString } from "@/lib/color";
 
 export default function ExpensePage() {
   // --- STATE MANAGEMENT ---
@@ -48,7 +49,6 @@ export default function ExpensePage() {
   const [totalBudget, setTotalBudget] = useState(0);
   const [totalExpanse, setTotalExpanse] = useState(0);
   const [mostCat, setMostCat] = useState<any>(null);
-
 
   useEffect(() => {
     async function checkExpanse() {
@@ -97,47 +97,6 @@ export default function ExpensePage() {
   const remaining = totalBudget - totalExpanse;
   const percent = Math.round((totalExpanse / totalBudget) * 100);
 
-  // --- SUB-COMPONENTS (Empty States) ---
-
-  // Tampilan jika Kategori ADA tapi Transaksi KOSONG
-  // const EmptyStateExpenses = () => (
-  //   <div className="flex flex-col items-center justify-center h-64 text-center p-6 border-2 border-dashed border-gray-200 rounded-2xl bg-gray-50/50">
-  //     <div className="bg-white p-4 rounded-full shadow-sm mb-4">
-  //       <ShoppingBag size={32} className="text-gray-400" />
-  //     </div>
-  //     <h3 className="text-lg font-bold text-gray-900">Belum ada pengeluaran</h3>
-  //     <p className="text-gray-500 text-sm max-w-xs mb-6">
-  //       Catat pengeluaran pertamamu untuk mulai memantau arus kas.
-  //     </p>
-  //     <button
-  //       onClick={() => setShowAddModal(true)}
-  //       className="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2.5 rounded-lg text-sm font-medium shadow-lg shadow-blue-600/20 transition flex items-center gap-2"
-  //     >
-  //       <PlusCircle size={18} /> Tambah Pengeluaran
-  //     </button>
-  //   </div>
-  // );
-
-  // Tampilan jika Kategori TIDAK ADA (0)
-  // const EmptyStateNoCategory = () => (
-  //   <div className="flex flex-col items-center justify-center h-64 text-center p-6 border border-rose-100 rounded-2xl bg-rose-50/30">
-  //     <div className="bg-white p-4 rounded-full shadow-sm mb-4">
-  //       <Layers size={32} className="text-rose-400" />
-  //     </div>
-  //     <h3 className="text-lg font-bold text-gray-900">Budget Kosong</h3>
-  //     <p className="text-gray-500 text-sm max-w-sm mb-6">
-  //       Kamu belum memiliki kategori budget. Silakan buat budget terlebih dahulu
-  //       sebelum mencatat pengeluaran.
-  //     </p>
-  //     <Link
-  //       href="/budget"
-  //       className="text-blue-600 font-semibold text-sm hover:underline flex items-center gap-1"
-  //     >
-  //       Pergi ke Halaman Budget &rarr;
-  //     </Link>
-  //   </div>
-  // );
-
   return (
     <>
       <div className="flex flex-col bg-[#f8f9fc]">
@@ -167,9 +126,7 @@ export default function ExpensePage() {
                     <div className="p-2 bg-white/20 rounded-lg backdrop-blur-sm">
                       <CreditCard size={20} className="text-white" />
                     </div>
-                    <span className="flex items-center gap-1 text-xs font-medium bg-rose-500/50 px-2 py-1 rounded-full border border-rose-400/50">
-                      <TrendingDown size={12} /> Boros +5%
-                    </span>
+                    <span className="flex items-center gap-1 text-xs font-medium bg-rose-500/50 px-2 py-1 rounded-full border border-rose-400/50"></span>
                   </div>
                   <div className="mt-4">
                     <p className="text-rose-100 text-sm font-medium">
@@ -201,7 +158,7 @@ export default function ExpensePage() {
                       </span>
                     </div>
                     {/* Progress Bar */}
-                    <div className="w-full bg-gray-100 rounded-full h-2.5">
+                    <div className="w-full bg-gray-100 rounded-full h-2.5 overflow-hidden">
                       <div
                         className={`${
                           percent >= 85
@@ -269,61 +226,75 @@ export default function ExpensePage() {
 
                 {/* SCROLLABLE LIST */}
                 <div className="flex-1 overflow-y-auto divide-y divide-gray-100">
-                  {data.map((tx) => (
-                    <div
-                      key={tx.id}
-                      className="group flex items-center justify-between p-5 hover:bg-rose-50/30 cursor-pointer transition"
-                    >
-                      {/* KIRI: ICON + NAMA ITEM */}
-                      <div className="flex items-center gap-4 w-1/3">
-                        <div className="p-3 bg-rose-100 text-rose-600 rounded-xl group-hover:bg-rose-200 transition">
-                          {/* <Coffee size={24} /> */}
+                  {data.map((tx) => {
+                    const color = colorFromString(tx.category_name);
+
+                    return (
+                      <div
+                        key={tx.id}
+                        className="group flex items-center justify-between p-5 hover:bg-rose-50/30 cursor-pointer transition"
+                      >
+                        {/* KIRI */}
+                        <div className="flex items-center gap-4 w-1/3">
+                          <div
+                            className="w-9 h-9 flex items-center justify-center rounded-full"
+                            style={{
+                              backgroundColor: color
+                                .replace("hsl", "hsla")
+                                .replace(")", ", 0.15)"),
+                            }}
+                          >
+                            <ShoppingBag size={16} style={{ color }} />
+                          </div>
+
+                          <div>
+                            <h4 className="font-bold text-gray-900 text-base group-hover:text-rose-700 transition">
+                              {tx.title}
+                            </h4>
+                            <p className="text-xs text-gray-500 mt-1">
+                              {tx.type}
+                            </p>
+                          </div>
                         </div>
-                        <div>
-                          <h4 className="font-bold text-gray-900 text-base group-hover:text-rose-700 transition">
-                            {tx.title}
-                          </h4>
-                          <p className="text-xs text-gray-500 mt-1">
-                            {tx.type}
+
+                        {/* KATEGORI */}
+                        <div className="w-1/4">
+                          <span
+                            className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold border"
+                            style={{
+                              backgroundColor: `${color}20`,
+                              color: color,
+                              borderColor: `${color}40`,
+                            }}
+                          >
+                            {tx.category_name}
+                          </span>
+                        </div>
+
+                        {/* PAYMENT + DATE */}
+                        <div className="w-1/4">
+                          <span className="text-xs font-bold text-gray-600 bg-gray-100 px-2 py-0.5 rounded-full">
+                            {tx.payment}
+                          </span>
+                          <p className="text-xs text-gray-400 mt-1">
+                            {tx.created_at.toLocaleDateString("id-ID", {
+                              weekday: "long",
+                              day: "numeric",
+                              month: "short",
+                              year: "numeric",
+                            })}
+                          </p>
+                        </div>
+
+                        {/* AMOUNT */}
+                        <div className="w-1/6 text-right">
+                          <p className="font-bold text-lg text-red-500">
+                            - Rp {Number(tx.amount).toLocaleString("id-ID")}
                           </p>
                         </div>
                       </div>
-
-                      {/* KATEGORI */}
-                      <div className="w-1/4">
-                        <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold bg-rose-50 text-rose-700 border border-rose-200">
-                          {tx.category_name}
-                        </span>
-                      </div>
-
-                      {/* PAYMENT + TANGGAL */}
-                      <div className="w-1/4">
-                        <div className="flex items-center gap-2">
-                          <div className="p-1 bg-gray-100 rounded-full">
-                            <span className="text-[10px] font-bold text-gray-600 px-1">
-                              {tx.payment}
-                            </span>
-                          </div>
-                        </div>
-                        <p className="text-xs text-gray-400 mt-1">
-                          {" "}
-                          {tx.created_at.toLocaleDateString("id-ID", {
-                            weekday: "long",
-                            day: "numeric",
-                            month: "short",
-                            year: "numeric",
-                          })}
-                        </p>
-                      </div>
-
-                      {/* AMOUNT */}
-                      <div className="w-1/6 text-right">
-                        <p className="font-bold text-lg text-red-500">
-                          - Rp {Number(tx.amount).toLocaleString("id-ID")}
-                        </p>
-                      </div>
-                    </div>
-                  ))}
+                    );
+                  })}
                 </div>
 
                 {/* Footer */}
