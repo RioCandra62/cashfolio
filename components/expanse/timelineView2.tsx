@@ -49,6 +49,7 @@ export default function ExpensePage() {
   const [totalBudget, setTotalBudget] = useState(0);
   const [totalExpanse, setTotalExpanse] = useState(0);
   const [mostCat, setMostCat] = useState<any>(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     async function checkExpanse() {
@@ -92,6 +93,12 @@ export default function ExpensePage() {
       setMostCat(most);
     }
     getMostCat();
+
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 4000); // 4 detik
+
+    return () => clearTimeout(timer);
   }, []);
 
   const remaining = totalBudget - totalExpanse;
@@ -101,9 +108,17 @@ export default function ExpensePage() {
     <>
       <div className="flex flex-col bg-[#f8f9fc]">
         {checkCategory <= 0 ? (
-          <p>Budget category tidak ditemukan</p>
+          isLoading ? (
+
+            <div className="flex flex-col h-screen bg-[#f8f9fc] items-center justify-center">
+              <Loader2 className="animate-spin text-red-600" size={48} />
+              <p className="mt-4 text-gray-600">Loading Expanse data...</p>
+            </div>
+          ) : (
+            <p className="mt-4 text-gray-600">Data Expanse Tidak ditemukan</p>
+          )
         ) : checkExpanse <= 0 ? (
-          <div className="flex flex-col m-auto items-center gap-4set">
+          <div className="flex flex-col m-auto items-center gap-4">
             <p className="text-xl font-semibold">
               Data Expanse Tidak Ditemukan
             </p>
