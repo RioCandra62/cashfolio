@@ -57,7 +57,7 @@ export default function Sidebar() {
         </a>
         <a
           className="flex items-center gap-3 p-2 rounded-lg hover:bg-white/10"
-          href="#"
+          href="/dashboard/report"
         >
           Finance Report
         </a>
@@ -82,12 +82,6 @@ export default function Sidebar() {
         >
           User Profile
         </a>
-        {/* <a
-          className="flex items-center gap-3 p-2 rounded-lg hover:bg-white/10"
-          href="#"
-        >
-          Project
-        </a> */}
       </nav>
 
       <div className="mt-10">
