@@ -435,7 +435,7 @@ const chartOptions = {
 import { useEffect, useState } from "react";
 import { fetchTotalExpense } from "@/lib/Expanse";
 import { fetchTotalIncome } from "@/lib/Income";
-import { getUserBudget } from "@/cashfolio/lib/budget";
+import { getUserBudget } from "@/lib/budget";
 import { get } from "http";
 import { getTotalSaving } from "@/lib/saving";
 
