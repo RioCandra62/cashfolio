@@ -125,7 +125,7 @@ export default function Dashboard() {
             </span>
           </div>
           <p className="text-3xl font-bold text-gray-900 mb-1">
-            {formatRp(totalIncome - totalExpense)}
+            {formatRp(totalIncome - totalExpense - totalSaving)}
           </p>
           <p className="text-sm text-green-600 flex items-center gap-1 font-medium">
             <span className="bg-green-100 px-1.5 py-0.5 rounded text-xs">

@@ -113,28 +113,30 @@ export async function getMostExpensiveCategory() {
 
   const res = await pool.query(
     ` WITH total AS (
-        SELECT SUM(amount) AS total_amount
-        FROM transactions
-        WHERE user_id = $1 AND category_id IS NOT NULL
-      ),
-      category_sum AS (
-        SELECT
-          c.id,
-          c.name,
-          SUM(t.amount) AS amount
-        FROM transactions t
-        JOIN categories c ON t.category_id = c.id
-        WHERE t.user_id = $1 AND t.category_id IS NOT NULL
-        GROUP BY c.id, c.name
-      )
-      SELECT
-        c.id,
-        c.name,
-        c.amount,
-        (c.amount / t.total_amount) * 100 AS percent
-      FROM category_sum c, total t
-      ORDER BY c.amount DESC
-      LIMIT 1;`,
+  SELECT SUM(amount) AS total_amount
+  FROM transactions
+  WHERE user_id = $1 AND category_id IS NOT NULL
+),
+category_sum AS (
+  SELECT
+    c.id,
+    c.name,
+    SUM(t.amount) AS amount
+  FROM transactions t
+  JOIN categories c ON t.category_id = c.id
+  WHERE t.user_id = $1 AND t.category_id IS NOT NULL
+    AND c.name != 'Saving'
+  GROUP BY c.id, c.name
+)
+SELECT
+  c.id,
+  c.name,
+  c.amount,
+  (c.amount / t.total_amount) * 100 AS percent
+FROM category_sum c, total t
+ORDER BY c.amount DESC
+LIMIT 1;
+`,
     [user.user_id]
   );
 
