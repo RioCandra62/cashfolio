@@ -20,7 +20,7 @@ import {
   getTotalExpanseThisMonth,
   getTotalIncomeThisMonth,
 } from "@/lib/dashboard";
-import { getUserSaving } from "@/lib/saving";
+import { getTotalSaving, getUserSaving } from "@/lib/saving";
 import { getBudgetLimitByID, getUserBudget } from "@/lib/budget";
 
 import { colorFromString, generatePastelColors } from "@/lib/color";
@@ -33,6 +33,7 @@ export default function Dashboard() {
   const [category, setCategory] = useState<any[]>([]);
   const [limbudget, setLimitBudget] = useState<any[]>([]);
   const [highlightExpanse, setHighlightExpanse] = useState<any[]>([]);
+  const [totalSaving, setTotalSaving] = useState(0);
 
   useEffect(() => {
     async function getTotalIncome() {
@@ -60,10 +61,17 @@ export default function Dashboard() {
       setLimitBudget(res);
     }
 
+    async function totalSaving() {
+      const res  = await getTotalSaving();
+      setTotalSaving(res);
+    }
+
     async function getHighlightExpanse() {
       const res = await getUserExpenses();
       setHighlightExpanse(res);
     }
+
+    totalSaving();
     getHighlightExpanse();
     getbudlimit();
     getCategory();
@@ -135,33 +143,50 @@ export default function Dashboard() {
             </h3>
             <MoreHorizontal size={16} className="text-gray-400" />
           </div>
+
+          {/* Income, Expense, Saving */}
           <div className="flex justify-between items-end">
             <div>
               <p className="text-xs text-gray-400 mb-1 flex items-center gap-1">
                 <ArrowDownRight size={14} className="text-green-500" /> Income
               </p>
-              <p className="text-xl font-bold text-gray-900">
+              <p className="text-sm font-bold text-gray-900">
                 {formatRp(totalIncome)}
               </p>
             </div>
-            <div className="text-right">
+
+            <div>
               <p className="text-xs text-gray-400 mb-1 flex items-center justify-end gap-1">
                 <ArrowUpRight size={14} className="text-red-500" /> Expense
               </p>
-              <p className="text-xl font-bold text-gray-900">
+              <p className="text-sm font-bold text-gray-900">
                 {formatRp(totalExpense)}
               </p>
             </div>
+
+            <div>
+              <p className="text-xs text-gray-400 mb-1 flex items-center justify-end gap-1">
+                <ArrowDownRight size={14} className="text-blue-500" /> Saving
+              </p>
+              <p className="text-sm font-bold text-gray-900">
+                {formatRp(totalSaving)}
+              </p>
+            </div>
           </div>
+
           {/* Visual Bar */}
           <div className="w-full h-2 bg-gray-100 rounded-full mt-4 overflow-hidden flex">
             <div
               className="h-full bg-green-500"
-              style={{ width: `${100 - globalPercentage}%` }}
+              style={{ width: `${(totalIncome / totalIncome) * 100}%` }}
             ></div>
             <div
               className="h-full bg-red-500"
-              style={{ width: `${globalPercentage}%` }}
+              style={{ width: `${(totalExpense / totalIncome) * 100}%` }}
+            ></div>
+            <div
+              className="h-full bg-blue-500"
+              style={{ width: `${(totalSaving / totalIncome) * 100}%` }}
             ></div>
           </div>
         </div>

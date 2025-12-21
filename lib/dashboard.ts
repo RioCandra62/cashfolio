@@ -26,7 +26,7 @@ export async function getTotalExpanseThisMonth() {
 FROM transactions
 WHERE user_id = $1
   AND transaction_date >= DATE_TRUNC('month', CURRENT_DATE)
-  AND transaction_date < DATE_TRUNC('month', CURRENT_DATE) + INTERVAL '1 month'`,
+  AND transaction_date < DATE_TRUNC('month', CURRENT_DATE) + INTERVAL '1 month' AND type != 'saving'`,
     [user.user_id]
   );
 

@@ -474,27 +474,29 @@ export default function CashfolioReport() {
   }, []);
 
   const barData = {
-    labels: ["Income", "Expense"],
+    labels: ["Income", "Expense", "Saving"],
     datasets: [
       {
-        data: [allIncome, allExpanse],
+        data: [allIncome, allExpanse, allSaving],
         borderRadius: 8,
         backgroundColor: [
           "rgba(34, 197, 94, 0.5)", // soft green (income)
-          "rgba(239, 68, 68, 0.7)", // soft red (expense)
+          "rgba(239, 68, 68, 0.7)",
+          "rgba(59, 130, 246, 0.5)", // soft blue
         ],
       },
     ],
   };
 
   const doughnutData = {
-    labels: ["Expense", "Remaining"],
+    labels: ["Expense", "Remaining", "Saving"],
     datasets: [
       {
-        data: [allExpanse, allIncome - allExpanse],
+        data: [allExpanse,allSaving, allIncome - allExpanse],
         borderWidth: 0,
         backgroundColor: [
           "rgba(239, 68, 68, 0.7)", // soft red (expense)
+          "rgba(59, 130, 246, 0.5)", // soft blue
           "rgba(34, 197, 94, 0.5)", // soft green (income)
         ],
       },
@@ -512,36 +514,35 @@ export default function CashfolioReport() {
   };
 
   const expenseRatio = allExpanse / allIncome;
-  const savingRatio = allSaving / allIncome;
+  const savingRatio = allIncome > 0 ? (allSaving / allIncome) * 100 : 0;
   const remainingCash = allIncome - allExpanse - allSaving;
 
   let isBoros = false;
-  let status ='';
-  let desc = '';
+  let status = "";
+  let desc = "";
 
-  if (expenseRatio <= 0.4 && savingRatio >= 0.15){
+  if (expenseRatio <= 0.4 && savingRatio >= 0.15) {
     isBoros = false;
-    status = 'Sangat Hemat';
-    desc = 'Pengeluaran relatif rendah, namun tingkat tabungan masih rendah.';
+    status = "Sangat Hemat";
+    desc = "Pengeluaran relatif rendah, namun tingkat tabungan masih rendah.";
   }
 
   if (expenseRatio > 0.75 && savingRatio < 0.15) {
     // Pengeluaran besar, nabung kecil
     isBoros = true;
-    status = 'Normal';
-    
+    status = "Normal";
   }
 
   if (remainingCash < 0) {
     // Nombok
     isBoros = true;
-    status = 'Budget Deficit';
+    status = "Budget Deficit";
   }
 
   if (expenseRatio > 0.85) {
     // Red flag keras
     isBoros = true;
-    status = 'Sangat Boros (High Expense Ratio)';
+    status = "Sangat Boros (High Expense Ratio)";
   }
 
   return (
@@ -608,26 +609,41 @@ export default function CashfolioReport() {
         {/* SECTION 2 */}
         <section className="grid grid-cols-2 gap-16">
           {/* BUDGET LIST */}
-          <div>
-            <h2 className="text-lg font-semibold mb-4">Budget Breakdown</h2>
-            <table className="w-full text-sm">
-              <thead>
-                <tr className="border-b">
-                  <th className="text-left py-2">Category</th>
-                  <th className="text-right py-2">Amount</th>
-                </tr>
-              </thead>
-              <tbody>
-                {budget.map((b, i) => (
-                  <tr key={i} className="border-b last:border-0">
-                    <td className="py-3 text-gray-600">{b.name}</td>
+          <div className="flex flex-col gap-2">
+            <div className="flex flex-col">
+              <h2 className="text-lg font-semibold mb-4">Budget Breakdown</h2>
+              <table className="w-full text-sm">
+                <thead>
+                  <tr className="border-b">
+                    <th className="text-left py-2">Category</th>
+                    <th className="text-right py-2">Amount</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {budget.map((b, i) => (
+                    <tr key={i} className="border-b last:border-0">
+                      <td className="py-3 text-gray-600">{b.name}</td>
+                      <td className="py-3 text-right font-mono">
+                        {formatRupiah(b.budget)}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+            <div className="flex flex-col">
+              <h2 className="text-lg font-semibold mb-1">Saving</h2>
+              <table className="w-full text-sm">
+                <tbody>
+                  <tr className="border-t">
+                    <td className="py-3 text-gray-600">Saving</td>
                     <td className="py-3 text-right font-mono">
-                      {formatRupiah(b.budget)}
+                      {formatRupiah(allSaving)}
                     </td>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </tbody>
+              </table>
+            </div>
           </div>
 
           {/* ANALYSIS */}
@@ -649,8 +665,10 @@ export default function CashfolioReport() {
               <strong className={isBoros ? "text-rose-600" : "text-green-600"}>
                 {status}
               </strong>{" "}
-              {desc} dengan rincian <br /><strong>{percentage}%</strong>{" "}
-              dari total income, <br />dan rasio tabungan sebesar <strong>{(savingRatio).toFixed(2)}%</strong>
+              {desc} dengan rincian <br />
+              <strong>{percentage}%</strong> dari total income, <br />
+              dan persentase tabungan sebesar{" "}
+              <strong>{savingRatio.toFixed(2)}%</strong>
             </p>
           </div>
         </section>

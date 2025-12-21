@@ -31,6 +31,9 @@ import { generatePastelColors } from "@/lib/color";
 import { PieChart, Pie } from "recharts";
 import DonutChart from "@/components/budget/pieChart";
 import { fetchTotalExpense } from "@/lib/Expanse";
+import { fetchTotalIncome } from "@/lib/Income";
+import { get } from "https";
+import { getTotalSaving } from "@/lib/saving";
 
 export default function BudgetPlannerPage() {
   const [totalBudget, setTotalBudget] = useState(0);
@@ -54,6 +57,10 @@ export default function BudgetPlannerPage() {
   const [totalExpanse, setTotalExpanse] = useState(0);
 
   const [budget, setUserBudget] = useState<any[]>([]);
+
+  const [income, setIncome] = useState(0);
+
+  const [totalSaving, setTotalSaving] = useState(0);
 
   useEffect(() => {
     async function load() {
@@ -86,6 +93,18 @@ export default function BudgetPlannerPage() {
       setTotalExpanse(res);
     }
 
+    async function getIncome() {
+      const res = await fetchTotalIncome();
+      setIncome(res);
+    }
+
+    async function totalSaving() {
+      const res = await getTotalSaving();
+      setTotalSaving(res);
+    }
+
+    totalSaving();
+    getIncome();
     getTotalExpanse();
     getbudlimit();
     getCategory();
@@ -99,8 +118,10 @@ export default function BudgetPlannerPage() {
     { name: "Group D", value: 200, fill: "#FF8042" },
   ];
 
-  const globalPercentage = (totalExpanse / totalBudget) * 100;
-
+  
+  const safeBalance = income - totalBudget - totalExpanse - totalSaving;
+  const globalPercentage = (totalBudget / safeBalance) * 100;
+  
   const colors = generatePastelColors(category.length);
 
   return (
@@ -124,17 +145,21 @@ export default function BudgetPlannerPage() {
       {/* 1. TOP CARDS (SUMMARY) */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {/* Card 1: Total Budget */}
-        <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 flex flex-col justify-between h-32 relative overflow-hidden group">
+        <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 flex flex-col justify-between relative group">
           <div className="flex justify-between items-start z-10">
             <div className="p-2 bg-blue-50 text-blue-600 rounded-lg">
               <Wallet size={20} />
             </div>
           </div>
-          <div className="z-10">
-            <p className="text-slate-500 text-sm font-medium">Total Anggaran</p>
-            <h3 className="text-2xl font-bold text-slate-900 mt-1">
-              {formatRupiah(totalBudget)}
-            </h3>
+          <div className="flex flex-col">
+            <div className="z-10">
+              <p className="text-slate-500 text-sm font-medium">
+                Total Anggaran
+              </p>
+              <h3 className="text-2xl font-bold text-slate-900 mt-1">
+                {formatRupiah(totalBudget)}
+              </h3>
+            </div>
           </div>
           {/* Dekorasi Background */}
           <div className="absolute -right-4 -bottom-4 bg-blue-50 w-24 h-24 rounded-full opacity-50 group-hover:scale-125 transition duration-500"></div>
@@ -151,7 +176,7 @@ export default function BudgetPlannerPage() {
             <div className="flex justify-between items-end mb-1">
               <p className="text-slate-500 text-sm font-medium">Terpakai</p>
               <span className="text-sm font-bold text-slate-700">
-                {formatRupiah(totalExpanse)}
+                {formatRupiah(safeBalance)}
               </span>
             </div>
             <div className="w-full bg-slate-100 h-2.5 rounded-full overflow-hidden">
@@ -161,7 +186,7 @@ export default function BudgetPlannerPage() {
               ></div>
             </div>
             <p className="text-xs text-slate-400 mt-2">
-              {globalPercentage}% digunakan
+              {globalPercentage.toFixed(2)}% digunakan
             </p>
           </div>
         </div>
@@ -176,12 +201,12 @@ export default function BudgetPlannerPage() {
               Aman
             </span>
           </div>
-          <div>
+          <div className="">
             <p className="text-emerald-100 text-sm font-medium">
-              Sisa Anggaran
+              Available Budget
             </p>
             <h3 className="text-2xl font-bold mt-1">
-              {formatRupiah(totalBudget - totalExpanse)}
+              {formatRupiah(safeBalance)}
             </h3>
           </div>
         </div>

@@ -56,7 +56,7 @@ export async function getUserExpenses() {
       c.name AS category_name
     FROM transactions t
     JOIN categories c ON t.category_id = c.id
-    WHERE t.user_id = $1 AND t.category_id IS NOT NULL
+    WHERE t.user_id = $1 AND t.category_id IS NOT NULL AND t.type = 'expanse'
     ORDER BY t.transaction_date DESC
     `,
     [user.user_id]
@@ -72,7 +72,22 @@ export async function fetchTotalExpense() {
     `
       SELECT SUM(amount) AS total
       FROM transactions
-      WHERE user_id = $1 AND category_id IS NOT NULL
+      WHERE user_id = $1 AND category_id IS NOT NULL AND type != 'saving'
+    `,
+    [user.user_id]
+  );
+
+  return Number(res.rows[0]?.total || 0);
+}
+export async function fetchTotalSaving() {
+  const user = await getCurrentUser();
+  if (!user) return 0;
+
+  const res = await pool.query(
+    `
+      SELECT SUM(amount) AS total
+      FROM transactions
+      WHERE user_id = $1 AND category_id IS NOT NULL AND type != 'expanse'
     `,
     [user.user_id]
   );

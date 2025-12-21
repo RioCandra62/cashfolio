@@ -67,41 +67,6 @@ export async function createSaving(form: FormData) {
   }
 }
 
-// export async function createSaving(form: FormData) {
-//   const user = await getCurrentUser();
-//   if (!user) throw new Error("Unauthorized");
-
-//   const title = form.get("item") as string;
-//   const targetAmount = Number(form.get("amount"));
-//   const targetDate = form.get("date") as string | null;
-
-//   // VALIDASI
-//   if (!title) throw new Error("Judul saving wajib diisi");
-//   if (!targetAmount || targetAmount <= 0)
-//     throw new Error("Target amount tidak valid");
-
-//   try {
-//     const result = await pool.query(
-//       `
-//       INSERT INTO saving
-//         (user_id, title, target,target_date)
-//       VALUES
-//         ($1, $2, $3, $4)
-//       RETURNING *
-//       `,
-//       [user.user_id, title, targetAmount, targetDate]
-//     );
-
-//     return {
-//       success: true,
-//       data: result.rows[0],
-//     };
-//   } catch (err) {
-//     console.error("CREATE SAVING ERROR:", err);
-//     throw new Error("Gagal membuat saving");
-//   }
-// }
-
 export async function getUserSaving() {
   const user = await getCurrentUser();
   if (!user) return [];
@@ -172,11 +137,11 @@ export async function tabungById(form: FormData) {
   await pool.query(
     `
     INSERT INTO transactions
-      (user_id, title, amount, transaction_date, category_id, payment)
+      (user_id, title, amount, transaction_date, category_id, payment, type)
     VALUES
-      ($1, $2, $3, NOW(), $4, $5)
+      ($1, $2, $3, NOW(), $4, $5, $6)
     `,
-    [user.user_id, "Nabung", amount, categoryId, "Cash"]
+    [user.user_id, "Nabung", amount, categoryId, "Cash", "saving"]
   );
 
   return { success: true };

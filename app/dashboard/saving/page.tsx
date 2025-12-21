@@ -175,15 +175,15 @@ export default function Saving() {
             </div>
 
             {/* Progress Bar Section */}
-            <div className="flex flex-row items-center gap-8">
-              <div className="w-full bg-gray-200 h-2 rounded-full overflow-hidden">
+            <div className="flex flex-row items-center gap-4 ">
+              <div className="w-[90%] bg-gray-200 h-2 rounded-full overflow-hidden">
                 <div
-                  className="h-full bg-gradient-to-r from-green-400 to-emerald-500 transition-all duration-500"
-                  style={{ width: `${Math.round((sv.saved / sv.target) * 100)}` }}
+                  className="h-full bg-gradient-to-r from-green-400 to-emerald-500 transition-all duration-500 "
+                  style={{ width: `${Math.round((sv.saved / sv.target) * 100)}%` }}
                 ></div>
               </div>
-              <p className="font-medium text-gray-700 min-w-[3rem] text-right">
-                {Math.round((sv.saved / sv.target) * 100)} %
+              <p className="font-medium text-gray-700 min-w-[3rem]  w-[10%] text-center">
+                {Math.round((sv.saved / sv.target) * 100).toFixed(2)} %
               </p>
             </div>
 
