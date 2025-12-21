@@ -9,7 +9,7 @@ export default function Sidebar() {
   };
 
   return (
-    <aside className="w-64 bg-[#0D1B52] text-white max-h-screen p-6 sticky top-0">
+    <aside className="w-64 bg-[#0D1B52] text-white max-h-screen p-6 sticky top-0 print:hidden">
       <div className="text-2xl font-bold mb-10 flex items-center gap-2 rounded-md justify-center p-2 bg-white">
         {/* <div className="w-8 h-8 bg-white rounded-md"></div> */}
         <Image
@@ -86,7 +86,12 @@ export default function Sidebar() {
 
       <div className="mt-10">
         <h2 className="text-sm opacity-70 mb-2">PDF Report</h2>
-        <button className="w-full bg-blue-600 py-2 rounded-lg">Download</button>
+        <button
+          onClick={() => window.print()}
+          className="w-full bg-blue-600 py-2 rounded-lg"
+        >
+          Download
+        </button>
       </div>
 
       <div className="mt-10 flex items-center justify-between">

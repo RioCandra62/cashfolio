@@ -6,8 +6,32 @@
 }
 
 body {
-  -ms-overflow-style: none;  /* IE/Edge */
-  scrollbar-width: none;      /* Firefox */
+  -ms-overflow-style: none; /* IE/Edge */
+  scrollbar-width: none; /* Firefox */
 }
+@media print {
+  @page {
+    size: A4 portrait;
+    margin: 0;
+  }
 
+  html,
+  body {
+    margin: 0;
+    padding: 0;
+    background: white;
+  }
 
+  body {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  .print-area {
+    margin: 0 auto;
+    padding: 16mm;
+    width: 210mm;
+    min-height: 297mm;
+    box-shadow: none;
+  }
+}

@@ -6,7 +6,7 @@ export default async function Header() {
   const user = await getCurrentUser();
   return (
     <>
-      <div className="flex justify-between items-center mb-8">
+      <div className="flex justify-between items-center mb-8 print:hidden">
         <div>
           <div className='flex flex-row gap-2 text-2xl font-semibold'>
             <Greeting />
