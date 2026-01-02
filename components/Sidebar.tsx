@@ -95,13 +95,6 @@ export default function Sidebar() {
       </div>
 
       <div className="mt-10 flex items-center justify-between">
-        <span className="text-sm">Dark Mode</span>
-        <label className="inline-flex items-center cursor-pointer">
-          <input type="checkbox" className="sr-only peer" />
-          <div className="w-10 h-5 bg-gray-400 peer-checked:bg-blue-600 rounded-full relative">
-            <div className="absolute w-4 h-4 bg-white rounded-full top-0.5 left-0.5 peer-checked:left-5 transition-all"></div>
-          </div>
-        </label>
       </div>
     </aside>
   );

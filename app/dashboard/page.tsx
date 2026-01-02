@@ -24,7 +24,8 @@ import { getTotalSaving, getUserSaving } from "@/lib/saving";
 import { getBudgetLimitByID, getUserBudget } from "@/lib/budget";
 
 import { colorFromString, generatePastelColors } from "@/lib/color";
-import { getUserExpenses } from "@/lib/Expanse";
+import { fetchTotalExpense, getUserExpenses } from "@/lib/Expanse";
+import { fetchTotalIncome } from "@/lib/Income";
 
 export default function Dashboard() {
   const [totalIncome, setTotalIncome] = useState(0);
@@ -37,12 +38,12 @@ export default function Dashboard() {
 
   useEffect(() => {
     async function getTotalIncome() {
-      const res = await getTotalIncomeThisMonth();
+      const res = await fetchTotalIncome();
       setTotalIncome(res);
     }
 
     async function getTotalExpense() {
-      const res = await getTotalExpanseThisMonth();
+      const res = await fetchTotalExpense();
       setTotalExpense(res);
     }
 

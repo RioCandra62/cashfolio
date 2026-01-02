@@ -2,6 +2,7 @@
 
 import AddSaving from "@/components/saving/addSaving";
 import Tabung from "@/components/saving/tabung";
+import EditSaving from "@/components/saving/editSaving";
 import {
   getCompleteSaving,
   getNumberSaving,
@@ -16,6 +17,7 @@ import {
   Wallet,
   TrendingUp,
   ArrowRight,
+  Edit,
 } from "lucide-react";
 import { useEffect, useState } from "react";
 
@@ -31,6 +33,7 @@ export default function Saving() {
 
   const [saving, setSaving] = useState<any[]>([]);
   const [activeSavingId, setActiveSavingId] = useState<string | null>(null);
+  const [activeEditSavingId, setActiveEditSavingId] = useState<string | null>(null);
   const [totalSaved, setTotalSaved] = useState(0);
   const [totalTarget, setTotalTarget] = useState(0);
   const [numberSaving, setNumberSaving] = useState(0);
@@ -130,7 +133,7 @@ export default function Saving() {
                 {globalPercentage}% Terkumpul
               </p>
             </div>
-            <div className="h-12 w-12 min-w-[3rem] bg-indigo-50 rounded-xl flex items-center justify-center text-indigo-600">
+            <div className="h-12 w-12 min-w-12 bg-indigo-50 rounded-xl flex items-center justify-center text-indigo-600">
               <Target size={24} />
             </div>
           </div>
@@ -178,11 +181,13 @@ export default function Saving() {
             <div className="flex flex-row items-center gap-4 ">
               <div className="w-[90%] bg-gray-200 h-2 rounded-full overflow-hidden">
                 <div
-                  className="h-full bg-gradient-to-r from-green-400 to-emerald-500 transition-all duration-500 "
-                  style={{ width: `${Math.round((sv.saved / sv.target) * 100)}%` }}
+                  className="h-full bg-linear-to-r from-green-400 to-emerald-500 transition-all duration-500 "
+                  style={{
+                    width: `${Math.round((sv.saved / sv.target) * 100)}%`,
+                  }}
                 ></div>
               </div>
-              <p className="font-medium text-gray-700 min-w-[3rem]  w-[10%] text-center">
+              <p className="font-medium text-gray-700 min-w-12  w-[10%] text-center">
                 {Math.round((sv.saved / sv.target) * 100).toFixed(2)} %
               </p>
             </div>
@@ -206,13 +211,24 @@ export default function Saving() {
                 </span>
               </div>
             </div>
-            <button
-              disabled={sv.target === sv.saved}
-              onClick={() => setActiveSavingId(sv.id)}
-              className={`${sv.target === sv.saved ? "bg-sky-800" : "bg-blue-600"} text-white px-2 py-1 rounded-lg w-fit`}
-            >
-              {sv.target === sv.saved ? "Complete" : "Tabung"}
-            </button>
+            <div className="flex flex-row gap-4">
+              <button
+                disabled={sv.target === sv.saved}
+                onClick={() => setActiveSavingId(sv.id)}
+                className={`${
+                  sv.target === sv.saved ? "bg-sky-800" : "bg-blue-600"
+                } text-white px-2 py-1 rounded-lg w-fit`}
+              >
+                {sv.target === sv.saved ? "Complete" : "Tabung"}
+              </button>
+              <button
+                disabled={sv.target === sv.saved}
+                onClick={() => setActiveEditSavingId(sv.id)}
+                className="bg-amber-500 px-2 py-1 rounded-md text-white"
+              >
+                Edit
+              </button>
+            </div>
           </div>
         ))}
       </div>
@@ -222,6 +238,13 @@ export default function Saving() {
         <Tabung
           savingId={activeSavingId}
           onClose={() => setActiveSavingId(null)}
+        />
+      )}
+
+      {activeEditSavingId && (
+        <EditSaving
+          savingId={activeEditSavingId}
+          onClose={() => setActiveEditSavingId(null)}
         />
       )}
     </div>

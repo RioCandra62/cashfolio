@@ -5,7 +5,7 @@ import { useState, ChangeEvent, FormEvent, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { createSaving } from "@/lib/saving";
 
-export default function AddSaving({
+export default function EditSaving({
   isOpen,
   onClose,
 }: {
